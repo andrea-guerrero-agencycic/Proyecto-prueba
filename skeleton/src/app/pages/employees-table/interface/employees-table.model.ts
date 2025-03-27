@@ -7,7 +7,7 @@ export class EmployeesTable {
     time_in_company: string;
     position_employe: string;
     contract_type: string;
-    employe_activate?: boolean;
+    employe_activate?: number;
 
     constructor(employee: any) {
         this.id = employee.id;

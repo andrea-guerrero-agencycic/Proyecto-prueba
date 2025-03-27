@@ -15,4 +15,19 @@ export class EmployeesService {
     getAll():Observable<{success:boolean,data:EmployeesTable[]}>{
       return  this.http.get<{success:boolean,data:EmployeesTable[]}>(this.apiUrl);
     }
+    
+    createEmploye(employe:EmployeesTable):Observable<{success:boolean,message:string}>{
+      var resultado= this.http.post<{success:boolean,message:string}>(this.apiUrl,employe);    
+      return resultado;
+    }
+
+    updateEmploye(newEmploye:EmployeesTable,id:String):Observable<EmployeesTable>{
+      const url = `${this.apiUrl}/${id}`;  
+      return this.http.put<EmployeesTable>(url,newEmploye);
+    }
+
+    deleteEmploye(id:String):Observable<{success:boolean,message:string}>{
+      const url = `${this.apiUrl}/${id}`;
+      return this.http.delete<{success:boolean,message:string}>(url)
+      }
 }

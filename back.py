@@ -37,7 +37,7 @@ def createEmploye():
         print("data",data)
         database = mysql.connector.connect(**config)
         cursor = database.cursor()
-        sql="INSERT INTO employees (name, phone,email, address,time_in_company, position_employe, contract_type,employe_activate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+        sql="INSERT INTO employees (id, name, phone,email, address,time_in_company, position_employe, contract_type,employe_activate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         cursor.execute(sql,tuple(data.values()))
         database.commit()
         cursor.close()

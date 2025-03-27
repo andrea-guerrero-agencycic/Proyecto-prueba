@@ -47,6 +47,7 @@ import { EmployeesService } from './employees.service';
 @Component({
   selector: 'vex-employees-table',
   standalone: true,
+  animations: [fadeInUp400ms, stagger40ms],
   imports: [
     VexPageLayoutComponent,
     VexPageLayoutHeaderDirective,
@@ -72,7 +73,7 @@ import { EmployeesService } from './employees.service';
   templateUrl: './employees-table.component.html',
   styleUrl: './employees-table.component.scss'
 })
-export class EmployeesTableComponent {
+export class EmployeesTableComponent implements OnInit,AfterViewInit{
   layoutCtrl = new UntypedFormControl('boxed');
 
   /**
@@ -122,7 +123,7 @@ export class EmployeesTableComponent {
     },
     {
       label: 'Position employe',
-      property: 'position_employe	',
+      property: 'position_employe',
       type: 'text',
       visible: true,
       cssClasses: ['text-secondary', 'font-medium']
@@ -183,9 +184,8 @@ export class EmployeesTableComponent {
       .subscribe((value) => this.onFilterChange(value));
   }
 
-  getData(){ 
+  getData() {
     this.service.getAll().subscribe((employees) => {
-      console.log("em",employees.data)
       this.employees = employees.data;
       this.subject$.next(this.employees);
     });
@@ -193,7 +193,6 @@ export class EmployeesTableComponent {
   }
 
   ngAfterViewInit() {
-    console.log("suscripcio", this.employees)
     if (this.paginator) {
       this.dataSource.paginator = this.paginator;
     }
@@ -207,17 +206,20 @@ export class EmployeesTableComponent {
     this.dialog
       .open(EmployeCreateUpdateComponent)
       .afterClosed()
-      .subscribe((employee: EmployeesTable) => {
+      .subscribe((employe: EmployeesTable) => {
         /**
          * EmployeesTable is the updated EmployeesTable (if the user pressed Save - otherwise it's null)
          */
-        if (employee) {
+        if (employe) {
           /**
            * Here we are updating our local array.
            * You would probably make an HTTP request here.
            */
-          this.employees.unshift(new EmployeesTable(employee));
-          // this.subject$.next(this.employees);
+          this.service.createEmploye(employe).subscribe((response) => {
+            this.subject$.next(this.employees);
+            this.employees.unshift(new EmployeesTable(employe));
+
+          })
         }
       });
   }
@@ -246,28 +248,25 @@ export class EmployeesTableComponent {
       });
   }
 
-  deleteCustomer(employee: EmployeesTable) {
+  deleteCustomer(employe: EmployeesTable) {
     /**
      * Here we are updating our local array.
      * You would probably make an HTTP request here.
      */
+
+    // this.service.deleteEmploye(employe?.id).subscribe((response)=>{
+
+    // })
     this.employees.splice(
       this.employees.findIndex(
-        (existingCustomer) => existingCustomer.id === employee.id
+        (existingCustomer) => existingCustomer.id === employe.id
       ),
       1
     );
-    this.selection.deselect(employee);
-    // this.subject$.next(this.employees);
+    this.selection.deselect(employe);
+    this.subject$.next(this.employees);
   }
 
-  deleteCustomers(employees: EmployeesTable[]) {
-    /**
-     * Here we are updating our local array.
-     * You would probably make an HTTP request here.
-     */
-    employees.forEach((c) => this.deleteCustomer(c));
-  }
 
   onFilterChange(value: string) {
     if (!this.dataSource) {
