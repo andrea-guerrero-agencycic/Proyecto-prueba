@@ -21,9 +21,9 @@ export class EmployeesService {
       return resultado;
     }
 
-    updateEmploye(newEmploye:EmployeesTable,id:String):Observable<EmployeesTable>{
-      const url = `${this.apiUrl}/${id}`;  
-      return this.http.put<EmployeesTable>(url,newEmploye);
+    updateEmploye(newEmploye:EmployeesTable):Observable<{success:boolean,message:string}>{
+      const url = `${this.apiUrl}/${newEmploye.id}`;  
+      return this.http.put<{success:boolean,message:string}>(url,newEmploye);
     }
 
     deleteEmploye(id:String):Observable<{success:boolean,message:string}>{

@@ -90,7 +90,7 @@ export class EmployeCreateUpdateComponent implements OnInit {
     }
 
     employe.id = this.defaults.id;
-
+    employe.employe_activate = this.defaults.employe_activate;
     this.dialogRef.close(employe);
   }
 

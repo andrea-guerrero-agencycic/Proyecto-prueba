@@ -8,7 +8,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { Observable, of, ReplaySubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { catchError, filter } from 'rxjs/operators';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -73,7 +73,7 @@ import { EmployeesService } from './employees.service';
   templateUrl: './employees-table.component.html',
   styleUrl: './employees-table.component.scss'
 })
-export class EmployeesTableComponent implements OnInit,AfterViewInit{
+export class EmployeesTableComponent implements OnInit, AfterViewInit {
   layoutCtrl = new UntypedFormControl('boxed');
 
   /**
@@ -150,8 +150,6 @@ export class EmployeesTableComponent implements OnInit,AfterViewInit{
   selection = new SelectionModel<EmployeesTable>(true, []);
   searchCtrl = new UntypedFormControl();
 
-  labels = aioTableLabels;
-
   @ViewChild(MatPaginator, { static: true }) paginator?: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort?: MatSort;
 
@@ -216,34 +214,46 @@ export class EmployeesTableComponent implements OnInit,AfterViewInit{
            * You would probably make an HTTP request here.
            */
           this.service.createEmploye(employe).subscribe((response) => {
-            this.subject$.next(this.employees);
-            this.employees.unshift(new EmployeesTable(employe));
+            if(response.success){
+              this.subject$.next(this.employees);
+              this.employees.unshift(new EmployeesTable(employe));
+
+            }
 
           })
         }
       });
   }
 
-  updateCustomer(employee: EmployeesTable) {
+  updateCustomer(employe: EmployeesTable) {
     this.dialog
       .open(EmployeCreateUpdateComponent, {
-        data: employee
+        data: employe
       })
       .afterClosed()
-      .subscribe((updatedCustomer) => {
+      .subscribe((updateEmploye) => {
         /**
          * employee is the updated employee (if the user pressed Save - otherwise it's null)
          */
-        if (updatedCustomer) {
-          /**
-           * Here we are updating our local array.
-           * You would probably make an HTTP request here.
-           */
-          const index = this.employees.findIndex(
-            (existingCustomer) => existingCustomer.id === updatedCustomer.id
-          );
-          this.employees[index] = new EmployeesTable(updatedCustomer);
-          // this.subject$.next(this.employees);
+        if (updateEmploye) {
+          try {
+            this.service.updateEmploye(updateEmploye).subscribe((response) => {
+              console.log(updateEmploye)
+              if (response.success) {
+                const index = this.employees.findIndex(
+                  (existingCustomer) => existingCustomer.id === updateEmploye.id
+                );
+                this.employees[index] = new EmployeesTable(updateEmploye);
+                this.subject$.next(this.employees);
+              }
+            })
+
+          } catch (error) {
+            console.error(error)
+          }
+
+
+
         }
       });
   }
@@ -253,10 +263,6 @@ export class EmployeesTableComponent implements OnInit,AfterViewInit{
      * Here we are updating our local array.
      * You would probably make an HTTP request here.
      */
-
-    // this.service.deleteEmploye(employe?.id).subscribe((response)=>{
-
-    // })
     this.employees.splice(
       this.employees.findIndex(
         (existingCustomer) => existingCustomer.id === employe.id

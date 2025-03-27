@@ -52,7 +52,7 @@ def updateEmploye(employe_id):
     try:
         data = request.json
         data.setdefault("employe_activate", 1) 
-
+        print(data)
         database = mysql.connector.connect(**config)
         cursor = database.cursor()
 
@@ -62,6 +62,7 @@ def updateEmploye(employe_id):
             return jsonify({"message" : f"Empleado no encontrado ","success":False}),404
               
         sql="UPDATE employees   SET name = %s, phone = %s, email = %s, address = %s, time_in_company = %s,position_employe = %s, contract_type = %s, employe_activate = %s WHERE id = %s"
+        data.pop("id",None)
         values = tuple(data.values()) + (employe_id,)  
         cursor.execute(sql,values)
         database.commit()
