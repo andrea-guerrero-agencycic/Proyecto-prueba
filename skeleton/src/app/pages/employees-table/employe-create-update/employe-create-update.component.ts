@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
@@ -43,15 +43,15 @@ export class EmployeCreateUpdateComponent implements OnInit {
   ) {}
   
   form = this.fb.group({
-    id:this.defaults?.id || null,
-    name: this.defaults?.name || '',
-    phone: this.defaults?.phone || '',
-    email: this.defaults?.email || '',
-    address: this.defaults?.address || '',
-    time_in_company: this.defaults?.time_in_company || '',
-    position_employe: this.defaults?.position_employe || '',
-    contract_type: this.defaults?.contract_type || '',
-    employe_activate: this.defaults?.employe_activate,
+    id: new FormControl(this.defaults?.id),
+    name: new FormControl(this.defaults?.name ||'',[Validators.required]),
+    phone: new FormControl(this.defaults?.phone ||'',[Validators.required,Validators.minLength(10),Validators.maxLength(10)]),
+    email: new FormControl(this.defaults?.email ||'',[Validators.required,Validators.email]),
+    address: new FormControl(this.defaults?.address ||'',[Validators.required]),
+    time_in_company: new FormControl(this.defaults?.time_in_company ||'',[Validators.required]),
+    position_employe: new FormControl(this.defaults?.position_employe ||'',[Validators.required]),
+    contract_type: new FormControl(this.defaults?.contract_type ||'',[Validators.required]),
+    employe_activate: new FormControl(this.defaults?.employe_activate),
   });
   mode: 'create' | 'update' = 'create';
 
@@ -99,5 +99,10 @@ export class EmployeCreateUpdateComponent implements OnInit {
 
   isUpdateMode() {
     return this.mode === 'update';
+  }
+
+  errorMessage(){
+    // console.log("email",this.form.get('email')?.errors)
+    return true
   }
 }
