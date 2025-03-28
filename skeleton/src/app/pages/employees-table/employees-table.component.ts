@@ -14,10 +14,6 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TableColumn } from '@vex/interfaces/table-column.interface';
-import {
-  aioTableData,
-  aioTableLabels
-} from '../../../static-data/aio-table-data';
 import { SelectionModel } from '@angular/cdk/collections';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
@@ -200,7 +196,7 @@ export class EmployeesTableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  createCustomer() {
+  createEmploye() {
     this.dialog
       .open(EmployeCreateUpdateComponent)
       .afterClosed()
@@ -209,19 +205,24 @@ export class EmployeesTableComponent implements OnInit, AfterViewInit {
          * EmployeesTable is the updated EmployeesTable (if the user pressed Save - otherwise it's null)
          */
         if (employe) {
-          this.service.createEmploye(employe).subscribe((response) => {
-            console.log(response)
-            if(response.success){
-              this.subject$.next(this.employees);
-              this.employees.unshift(new EmployeesTable(employe));
-            }
-
-          })
+          try {
+            this.service.createEmploye(employe).subscribe((response) => {
+              if(response.success){
+                this.employees.unshift(new EmployeesTable(employe));
+                this.subject$.next(this.employees);
+              }
+  
+            })
+            
+          } catch (error) {
+            console.error(error)
+          }
+          
         }
       });
   }
 
-  updateCustomer(employe: EmployeesTable) {
+  updateEmploye(employe: EmployeesTable) {
     this.dialog
       .open(EmployeCreateUpdateComponent, {
         data: employe
@@ -234,7 +235,6 @@ export class EmployeesTableComponent implements OnInit, AfterViewInit {
         if (updateEmploye) {
           try {
             this.service.updateEmploye(updateEmploye).subscribe((response) => {
-              console.log(updateEmploye)
               if (response.success) {
                 const index = this.employees.findIndex(
                   (existingCustomer) => existingCustomer.id === updateEmploye.id
@@ -254,7 +254,7 @@ export class EmployeesTableComponent implements OnInit, AfterViewInit {
       });
   }
 
-  deleteCustomer(id:number) {
+  deleteEmploye(id:number) {
     if (id) {
       try {
         this.service.deleteEmployee(id).subscribe((response) => {

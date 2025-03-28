@@ -8,7 +8,7 @@
         <div>
           <h1 class="title mt-0 mb-1">All-Employees</h1>
           <vex-breadcrumbs
-            [crumbs]="['Apps', 'All-IEmployees']"></vex-breadcrumbs>
+            [crumbs]="['Apps', 'All-Employees']"></vex-breadcrumbs>
         </div>
   
         <div class="hidden sm:block">
@@ -73,7 +73,7 @@
           </button>
   
           <button
-            (click)="createCustomer()"
+            (click)="createEmploye()"
             class="ml-4 flex-none"
             color="primary"
             mat-mini-fab
@@ -143,7 +143,7 @@
             <td *matCellDef="let row" class="w-10 text-secondary" mat-cell>
               <button
                 (click)="$event.stopPropagation()"
-                [matMenuTriggerData]="{ customer: row }"
+                [matMenuTriggerData]="{ employe: row }"
                 [matMenuTriggerFor]="actionsMenu"
                 mat-icon-button
                 type="button">
@@ -154,7 +154,7 @@
   
           <tr *matHeaderRowDef="visibleColumns" mat-header-row></tr>
           <tr
-            (click)="updateCustomer(row)"
+            (click)="updateEmploye(row)"
             *matRowDef="let row; columns: visibleColumns"
             @fadeInUp
             class="hover:bg-hover transition duration-400 ease-out-swift cursor-pointer"
@@ -184,12 +184,12 @@
   </mat-menu>
   
   <mat-menu #actionsMenu="matMenu" xPosition="before" yPosition="below">
-    <ng-template let-customer="customer" matMenuContent>
-      <button (click)="updateCustomer(customer)" mat-menu-item>
+    <ng-template let-employe="employe" matMenuContent>
+      <button (click)="updateEmploye(employe)" mat-menu-item>
         <mat-icon svgIcon="mat:edit"></mat-icon>
         <span>Modify</span>
       </button>
-      <button (click)="deleteCustomer(customer.id)" mat-menu-item>
+      <button (click)="deleteEmploye(employe.id)" mat-menu-item>
         <mat-icon svgIcon="mat:delete"></mat-icon>
         <span>Delete</span>
       </button>

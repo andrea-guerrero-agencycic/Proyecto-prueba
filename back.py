@@ -43,7 +43,6 @@ def createEmploye():
         database.close()
         return jsonify({"data":data,"message" : " Empleado creado ","success":True}),201
     except Exception as e:
-        print(f"Error:{e} ")
         return jsonify({"message" : f"Error:{e} " ,"success":False}),404
 
 
@@ -52,7 +51,6 @@ def updateEmploye(employe_id):
     try:
         data = request.json
         data.setdefault("employe_activate", 1) 
-        print(data)
         database = mysql.connector.connect(**config)
         cursor = database.cursor()
 

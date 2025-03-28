@@ -36,8 +36,6 @@ export class EmployeesService {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     return this.http.post<{ success: boolean; message: string; data?: any }>(this.apiUrl, employe, { headers }).pipe(
       map(response => {
-        console.log("res", response)
-        return response
         if (response.success) {
           const newEmployee = new EmployeesTable(response.data);
           return { success: true, message: "Empleado creado", data: newEmployee };
