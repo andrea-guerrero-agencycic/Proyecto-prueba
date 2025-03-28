@@ -32,9 +32,8 @@ def getAllEmployees():
 def createEmploye():
     try:
         data = request.json
-        print(data)
         data.setdefault("employe_activate", 1) 
-        print("data",data)
+        
         database = mysql.connector.connect(**config)
         cursor = database.cursor()
         sql="INSERT INTO employees (id, name, phone,email, address,time_in_company, position_employe, contract_type,employe_activate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
@@ -42,8 +41,9 @@ def createEmploye():
         database.commit()
         cursor.close()
         database.close()
-        return jsonify({"message" : " Empleado creado ","success":True}),201
+        return jsonify({"data":data,"message" : " Empleado creado ","success":True}),201
     except Exception as e:
+        print(f"Error:{e} ")
         return jsonify({"message" : f"Error:{e} " ,"success":False}),404
 
 
@@ -72,7 +72,7 @@ def updateEmploye(employe_id):
         cursor.close()
         database.close()
 
-        return jsonify({"message" : " Empleado Editado ","success":True}),200
+        return jsonify({"data":employe,"message" : " Empleado Editado ","success":True}),200
     except Exception as e:
         return jsonify({"message" : f"Error:{e} "}),404
 

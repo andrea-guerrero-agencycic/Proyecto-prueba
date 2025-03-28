@@ -26,8 +26,8 @@ export class NavigationLoaderService {
         children: [
           {
             type: 'link',
-            label: 'Analytics',
-            route: '/',
+            label: 'Employees',
+            route: '/employees',
             icon: 'mat:insights',
             routerLinkActiveOptions: { exact: true }
           }

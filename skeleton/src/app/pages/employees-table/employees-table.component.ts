@@ -183,7 +183,7 @@ export class EmployeesTableComponent implements OnInit, AfterViewInit {
   }
 
   getData() {
-    this.service.getAll().subscribe((employees) => {
+    this.service.getAllEmployee().subscribe((employees) => {
       this.employees = employees.data;
       this.subject$.next(this.employees);
     });
@@ -209,15 +209,11 @@ export class EmployeesTableComponent implements OnInit, AfterViewInit {
          * EmployeesTable is the updated EmployeesTable (if the user pressed Save - otherwise it's null)
          */
         if (employe) {
-          /**
-           * Here we are updating our local array.
-           * You would probably make an HTTP request here.
-           */
           this.service.createEmploye(employe).subscribe((response) => {
+            console.log(response)
             if(response.success){
               this.subject$.next(this.employees);
               this.employees.unshift(new EmployeesTable(employe));
-
             }
 
           })
@@ -258,19 +254,28 @@ export class EmployeesTableComponent implements OnInit, AfterViewInit {
       });
   }
 
-  deleteCustomer(employe: EmployeesTable) {
-    /**
-     * Here we are updating our local array.
-     * You would probably make an HTTP request here.
-     */
-    this.employees.splice(
-      this.employees.findIndex(
-        (existingCustomer) => existingCustomer.id === employe.id
-      ),
-      1
-    );
-    this.selection.deselect(employe);
-    this.subject$.next(this.employees);
+  deleteCustomer(id:number) {
+    if (id) {
+      try {
+        this.service.deleteEmployee(id).subscribe((response) => {
+          if (response.success) {
+            this.employees.splice(
+              this.employees.findIndex(
+                (existingCustomer) => existingCustomer.id === id
+              ),
+              1
+            );
+            this.subject$.next(this.employees);
+          }
+        })
+
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    else{
+      console.error("id no existe")
+    }
   }
 
 

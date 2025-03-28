@@ -76,7 +76,6 @@ export class EmployeCreateUpdateComponent implements OnInit {
   createEmploye() {
     this.form.value.employe_activate=1
     const employe = this.form.value;
-    console.log("emple",employe)
     this.dialogRef.close(employe);
   }
 
